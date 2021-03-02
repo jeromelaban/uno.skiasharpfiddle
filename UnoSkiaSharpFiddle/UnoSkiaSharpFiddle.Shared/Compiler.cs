@@ -58,7 +58,7 @@ namespace UnoSkiaSharpFiddle
 
         private CSharpLanguage()
         {
-            var sdkFiles = this.GetType().Assembly.GetManifestResourceNames().Where(f => f.Contains("dotnet-sdk"));
+            var sdkFiles = this.GetType().Assembly.GetManifestResourceNames().Where(f => f.Contains("dotnet_sdk"));
 
             _references = sdkFiles
                 .Select(f =>

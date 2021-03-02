@@ -15,11 +15,11 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="source" />
-            <Button Content="Compile" Click="{x:Bind OnCompile}" />
+            <TextBox Grid.Row="1" x:Name="source" AcceptsReturn="True" />
+            <Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
         </Grid>
         <skia:SKXamlCanvas Grid.Column="1" PaintSurface="OnPaintSurface" />
     </Grid>
