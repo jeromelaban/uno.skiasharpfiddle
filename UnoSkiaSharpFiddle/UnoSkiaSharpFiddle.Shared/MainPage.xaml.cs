@@ -25,7 +25,9 @@ namespace UnoSkiaSharpFiddle
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Action<SKSurface> _paint;
+        private delegate void SkiaRefreshHandler(SKSurface surface, int width, int height);
+
+        private SkiaRefreshHandler _paint;
 
         public MainPage()
         {
@@ -37,7 +39,7 @@ using SkiaSharp.Views.UWP;
 
 public class Program 
 { 
-    public static void Paint(SKSurface surface)
+    public static void Paint(SKSurface surface, int width, int height)
     {
         surface.Canvas.Clear(SKColors.Blue);
     }
@@ -57,14 +59,14 @@ public class Program
                 {
                     Console.WriteLine("Got Main method");
 
-                    _paint = (Action<SKSurface>)paintMethod.CreateDelegate(typeof(Action<SKSurface>));
+                    _paint = (SkiaRefreshHandler)paintMethod.CreateDelegate(typeof(SkiaRefreshHandler));
                 }
             }
         }
 
         private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs arg)
         {
-            _paint(arg.Surface);
+            _paint(arg.Surface, arg.Info.Width, arg.Info.Height);
         }
     }
 }
