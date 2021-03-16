@@ -7,16 +7,20 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace UnoSkiaSharpFiddle
 {
     public class Compiler
     {
-        public static Assembly Compile(string source)
+        public static async Task<Assembly> Compile(string source)
         {
             var cus = SyntaxFactory.ParseCompilationUnit(source);
 
             var sourceLanguage = CSharpLanguage.Instance;
+
+            await sourceLanguage.Initialize();
 
             Compilation compilation = sourceLanguage
               .CreateLibraryCompilation(assemblyName: "InMemoryAssembly", enableOptimisations: false)
@@ -52,23 +56,48 @@ namespace UnoSkiaSharpFiddle
 
     public class CSharpLanguage : ILanguageService
     {
-        private readonly IEnumerable<MetadataReference> _references;
+        private MetadataReference[] _references;
 
         public static CSharpLanguage Instance { get; } = new CSharpLanguage();
 
         private CSharpLanguage()
         {
-            var sdkFiles = this.GetType().Assembly.GetManifestResourceNames().Where(f => f.Contains("dotnet_sdk"));
+        }
 
-            _references = sdkFiles
+        public async Task Initialize()
+        {
+            if (_references != null)
+            {
+                return;
+            }
+
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///dotnet-sdk/fileslist.txt"));
+
+            var sdkFiles = await FileIO.ReadLinesAsync(file);
+
+            var tasks = sdkFiles
                 .Select(f =>
                 {
-                    using (var s = this.GetType().Assembly.GetManifestResourceStream(f))
+                    async Task<MetadataReference> LoadReference()
                     {
-                        return MetadataReference.CreateFromStream(s);
+                        var targetFile = f
+                        .Replace(".dll", ".clr")
+                        .Replace("dotnet-sdk-source", "dotnet-sdk");
+
+                        var sdkFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///{targetFile}"));
+
+                        using var stream = await sdkFile.OpenReadAsync();
+                        var streamCopy = new MemoryStream();
+                        stream.AsStream().CopyTo(streamCopy);
+
+                        streamCopy.Position = 0;
+                        return MetadataReference.CreateFromStream(streamCopy);
                     }
-                })
-                .ToArray();
+
+                    return LoadReference();
+                });
+
+            _references = await Task.WhenAll(tasks);
         }
 
         public Compilation CreateLibraryCompilation(string assemblyName, bool enableOptimisations)

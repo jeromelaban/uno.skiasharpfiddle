@@ -27,7 +27,7 @@ namespace UnoSkiaSharpFiddle
     {
         private delegate void SkiaRefreshHandler(SKSurface surface, int width, int height);
 
-        private SkiaRefreshHandler _paint;
+        private SkiaRefreshHandler? _paint;
 
         public MainPage()
         {
@@ -47,26 +47,35 @@ public class Program
 ";
         }
 
-        public void OnCompile()
+        public async void OnCompile()
         {
-            var assembly = Compiler.Compile(source.Text);
-
-            if (assembly.GetExportedTypes().Where(et => et.Name == "Program").FirstOrDefault() is Type programType)
+            try
             {
-                Console.WriteLine("Got Program type");
+                var assembly = await Compiler.Compile(source.Text);
 
-                if (programType.GetMethod("Paint") is MethodInfo paintMethod)
+                if (assembly.GetExportedTypes().Where(et => et.Name == "Program").FirstOrDefault() is Type programType)
                 {
-                    Console.WriteLine("Got Main method");
+                    Console.WriteLine("Got Program type");
 
-                    _paint = (SkiaRefreshHandler)paintMethod.CreateDelegate(typeof(SkiaRefreshHandler));
+                    if (programType.GetMethod("Paint") is MethodInfo paintMethod)
+                    {
+                        Console.WriteLine("Got Main method");
+
+                        _paint = (SkiaRefreshHandler)paintMethod.CreateDelegate(typeof(SkiaRefreshHandler));
+
+                        skiaCanvas.Invalidate();
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
         private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs arg)
         {
-            _paint(arg.Surface, arg.Info.Width, arg.Info.Height);
+            _paint?.Invoke(arg.Surface, arg.Info.Width, arg.Info.Height);
         }
     }
 }

@@ -21,6 +21,6 @@
             <TextBox Grid.Row="1" x:Name="source" AcceptsReturn="True" />
             <Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
         </Grid>
-        <skia:SKXamlCanvas Grid.Column="1" PaintSurface="OnPaintSurface" />
+        <skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
     </Grid>
 </Page>
