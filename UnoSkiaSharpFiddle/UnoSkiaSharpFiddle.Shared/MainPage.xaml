@@ -8,19 +8,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <TextBox Grid.Row="1" x:Name="source" AcceptsReturn="True" />
-            <Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
-        </Grid>
-        <skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
-    </Grid>
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<TextBox Grid.Row="1" x:Name="source" AcceptsReturn="True" />
+			<StackPanel Spacing="10" Orientation="Horizontal">
+				<Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
+				<ComboBox Grid.Row="0" 
+						  ItemsSource="{x:Bind Samples}" 
+						  DisplayMemberPath="Name"
+						  SelectedItem="{x:Bind SelectedSample, Mode=TwoWay}" />
+			</StackPanel>
+		</Grid>
+		<skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
+	</Grid>
 </Page>
