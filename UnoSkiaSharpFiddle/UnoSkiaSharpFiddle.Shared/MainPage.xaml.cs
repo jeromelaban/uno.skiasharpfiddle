@@ -1,4 +1,8 @@
-﻿using SkiaSharp;
+﻿using Microsoft.CodeAnalysis;
+using Monaco;
+using Monaco.Editor;
+using Monaco.Helpers;
+using SkiaSharp;
 using SkiaSharp.Views.UWP;
 using System;
 using System.Collections.Generic;
@@ -6,8 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -86,11 +92,11 @@ namespace UnoSkiaSharpFiddle
 
 		public async void OnCompile()
 		{
-			try
-			{
-				var assembly = await Compiler.Compile(source.Text);
+			var result = await Compiler.Compile(source.Text);
 
-				if (assembly.GetExportedTypes().Where(et => et.Name == "Program").FirstOrDefault() is Type programType)
+			if (result.Assembly != null)
+			{
+				if (result.Assembly.GetExportedTypes().Where(et => et.Name == "Program").FirstOrDefault() is Type programType)
 				{
 					Console.WriteLine("Got Program type");
 
@@ -104,11 +110,56 @@ namespace UnoSkiaSharpFiddle
 					}
 				}
 			}
-			catch (Exception e)
+
+			source.Decorations.Clear();
+
+			var sb = new StringBuilder();
+
+			foreach (var diagnostic in result.Diagnostics.Where(d => d.Severity >= DiagnosticSeverity.Warning ))
 			{
-				Console.WriteLine(e);
+				sb.AppendLine(diagnostic.ToString());
+
+				var lineSpan = diagnostic.Location.GetLineSpan();
+
+				var range = new Monaco.Range(
+					(uint)lineSpan.StartLinePosition.Line + 1,
+					(uint)lineSpan.StartLinePosition.Character,
+					(uint)lineSpan.EndLinePosition.Line + 1,
+					(uint)lineSpan.StartLinePosition.Character
+				);
+
+				// Highlight Error Line
+				source.Decorations.Add(new IModelDeltaDecoration(
+					range,
+					new IModelDecorationOptions() { 
+						IsWholeLine = true,
+						ClassName = _errorStyle, 
+						HoverMessage = new string[] { diagnostic.ToString() }.ToMarkdownString() 
+					}));
+
+				// Show Glyph Icon
+				source.Decorations.Add(new IModelDeltaDecoration(
+					range,
+					new IModelDecorationOptions() { 
+						IsWholeLine = true,
+						GlyphMarginClassName = _errorIconStyle, 
+						GlyphMarginHoverMessage = new string[] { diagnostic.ToString() }.ToMarkdownString() }
+					));
+
 			}
+
+			buildOutput.Text = sb.ToString();
 		}
+
+		private CssLineStyle _errorStyle = new CssLineStyle()
+		{
+			BackgroundColor = new SolidColorBrush(Color.FromArgb(0x00, 152, 12, 19))
+		};
+
+		private CssGlyphStyle _errorIconStyle = new CssGlyphStyle()
+		{
+			GlyphImage = new System.Uri("Icons/Error.png", UriKind.Relative)
+		};
 
 		private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs arg)
 		{
