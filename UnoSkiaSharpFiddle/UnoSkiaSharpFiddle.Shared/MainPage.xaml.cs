@@ -94,7 +94,9 @@ namespace UnoSkiaSharpFiddle
 		{
 			Console.WriteLine("Compile {0}", source.Text);
 
-			var result = await Compiler.Compile(source.Text);
+			var sourceText = source.Text.Replace("\\n", "\n");
+
+			var result = await Compiler.Compile(sourceText);
 
 			if (result.Assembly != null)
 			{
