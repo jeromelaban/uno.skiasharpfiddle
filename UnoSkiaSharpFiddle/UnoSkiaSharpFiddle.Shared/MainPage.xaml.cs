@@ -92,6 +92,8 @@ namespace UnoSkiaSharpFiddle
 
 		public async void OnCompile()
 		{
+			Console.WriteLine("Compile {0}", source.Text);
+
 			var result = await Compiler.Compile(source.Text);
 
 			if (result.Assembly != null)
