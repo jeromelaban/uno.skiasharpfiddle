@@ -37,9 +37,10 @@
 			</StackPanel>
 		</Grid>
 		<skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
-		<TextBlock x:Name="buildOutput" 
-				   Grid.Row="1" 
-				   IsTextSelectionEnabled="True" 
-				   FontFamily="Courier New" />
+		<ScrollViewer Grid.Row="1">
+			<TextBlock x:Name="buildOutput" 
+					   IsTextSelectionEnabled="True" 
+					   FontFamily="Courier New" />
+		</ScrollViewer>
 	</Grid>
 </Page>
