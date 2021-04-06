@@ -27,7 +27,7 @@ jobs:
           
       - run: |
           cd UnoSkiaSharpFiddle/UnoSkiaSharpFiddle.Wasm
-          dotnet build -c Release -v:n
+          dotnet build -c Release
 
       - name: Deploy
         id: builddeploy
