@@ -45,11 +45,14 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="SkiaSharp.Views.Uno" Version="2.80.3-preview.40" />
-    <PackageReference Include="Uno.UI.WebAssembly" Version="3.4.0" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="3.7.0-dev.153" />
     <PackageReference Include="Uno.UI.RemoteControl" Version="3.4.0" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="2.1.0-dev.45" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0-dev.45" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
   <Import Project="..\UnoSkiaSharpFiddle.Shared\UnoSkiaSharpFiddle.Shared.projitems" Label="Shared" Condition="Exists('..\UnoSkiaSharpFiddle.Shared\UnoSkiaSharpFiddle.Shared.projitems')" />
   <Target Name="BuildSDKFilesList" BeforeTargets="BeforeBuild">
