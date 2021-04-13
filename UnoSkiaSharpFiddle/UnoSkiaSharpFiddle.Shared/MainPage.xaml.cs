@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Monaco;
 using Monaco.Editor;
 using Monaco.Helpers;
@@ -43,6 +44,11 @@ namespace UnoSkiaSharpFiddle
 			PopuplateSamples();
 
 			source.Text = Samples.FirstOrDefault()?.Code ?? "No embedded samples !";
+
+			source.SizeChanged += (snd, evt) =>
+			{
+				source.ExecuteJavascript("editor.layout();");
+			};
 		}
 
 		public Sample[] Samples { get; private set; }
@@ -127,16 +133,16 @@ namespace UnoSkiaSharpFiddle
 
 				var range = new Monaco.Range(
 					(uint)lineSpan.StartLinePosition.Line + 1,
-					(uint)lineSpan.StartLinePosition.Character,
+					(uint)lineSpan.StartLinePosition.Character + 1,
 					(uint)lineSpan.EndLinePosition.Line + 1,
-					(uint)lineSpan.StartLinePosition.Character
+					(uint)lineSpan.EndLinePosition.Character + 1
 				);
 
 				// Highlight Error Line
 				source.Decorations.Add(new IModelDeltaDecoration(
 					range,
 					new IModelDecorationOptions() { 
-						IsWholeLine = true,
+						IsWholeLine = false,
 						ClassName = _errorStyle, 
 						HoverMessage = new string[] { diagnostic.ToString() }.ToMarkdownString() 
 					}));
@@ -145,11 +151,10 @@ namespace UnoSkiaSharpFiddle
 				source.Decorations.Add(new IModelDeltaDecoration(
 					range,
 					new IModelDecorationOptions() { 
-						IsWholeLine = true,
+						IsWholeLine = false,
 						GlyphMarginClassName = _errorIconStyle, 
 						GlyphMarginHoverMessage = new string[] { diagnostic.ToString() }.ToMarkdownString() }
 					));
-
 			}
 
 			buildOutput.Text = sb.ToString();
@@ -162,7 +167,7 @@ namespace UnoSkiaSharpFiddle
 
 		private CssGlyphStyle _errorIconStyle = new CssGlyphStyle()
 		{
-			GlyphImage = new System.Uri("Icons/Error.png", UriKind.Relative)
+			GlyphImage = new System.Uri("Assets/Icons/Error.png", UriKind.Relative)
 		};
 
 		private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs arg)
