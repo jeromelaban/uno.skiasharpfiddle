@@ -11,8 +11,11 @@
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
+		<WasmShellEmccLinkOptimization>false</WasmShellEmccLinkOptimization>
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 	<ItemGroup>
+		<Content Include="Assets\Icons\Error.png" />
 		<Content Include="Assets\SplashScreen.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -36,8 +39,12 @@
 	  <Compile Remove="skia-samples\SweepGradient.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Assets\Icons\Error.png" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.8.0" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.4" />
+		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.1.0-build.2.g0e224f133a" />
 		<PackageReference Include="Uno.Monaco.Editor" Version="1.0.0-uno.96" />
 		<PackageReference Include="Uno.SQLitePCLRaw.provider.wasm" Version="3.0.14" />
 
