@@ -4,43 +4,73 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UnoSkiaSharpFiddle"
     xmlns:skia="using:SkiaSharp.Views.UWP"
+	xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:monaco="using:Monaco"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition/>
-			<ColumnDefinition/>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="100"/>
-		</Grid.RowDefinitions>
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="auto"/>
-				<RowDefinition/>
-			</Grid.RowDefinitions>
-			<monaco:CodeEditor Grid.Row="1" x:Name="source" 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="100"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <monaco:CodeEditor Grid.Row="1" x:Name="source" 
                     Background="Transparent"
                     RequestedTheme="Dark"
                     HasGlyphMargin="True"
                     CodeLanguage="csharp" />
-			<StackPanel Spacing="10" Orientation="Horizontal">
-				<Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
-				<ComboBox Grid.Row="0" 
+            <StackPanel Spacing="10" Orientation="Horizontal">
+                <Button Grid.Row="0" Content="Compile" Click="{x:Bind OnCompile}" />
+                <ComboBox Grid.Row="0" 
                           ItemsSource="{x:Bind Samples}" 
                           DisplayMemberPath="Name"
                           SelectedItem="{x:Bind SelectedSample, Mode=TwoWay}" />
-			</StackPanel>
-		</Grid>
-		<skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
-		<ScrollViewer Grid.Row="1">
-			<TextBlock x:Name="buildOutput" 
-					   IsTextSelectionEnabled="True" 
-					   FontFamily="Courier New" />
-		</ScrollViewer>
-	</Grid>
+            </StackPanel>
+        </Grid>
+        <skia:SKXamlCanvas x:Name="skiaCanvas"  Grid.Column="1" PaintSurface="OnPaintSurface" />
+
+        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Padding="8">
+            <TextBlock x:Name="buildOutput" 
+                       IsTextSelectionEnabled="True" 
+                       FontFamily="Courier New" />
+        </ScrollViewer>
+		
+        <controls:GridSplitter Grid.Column="1" Width="11" ResizeBehavior="BasedOnAlignment"
+            ResizeDirection="Auto" Background="Gray" HorizontalAlignment="Left" Foreground="White" FontSize="13">
+            <controls:GridSplitter.Element>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Center" IsHitTestVisible="False" VerticalAlignment="Center"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                    </TextBlock>
+                </Grid>
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
+
+        <!--Row Grid Splitter-->
+		
+        <controls:GridSplitter Foreground="White" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top" ResizeBehavior="BasedOnAlignment"
+            ResizeDirection="Auto" Background="Gray" Height="16" HorizontalAlignment="Stretch"  FontSize="13">
+            <controls:GridSplitter.RenderTransform>
+            <TranslateTransform Y="-8" />
+            </controls:GridSplitter.RenderTransform>
+			
+            <controls:GridSplitter.Element>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Center" IsHitTestVisible="False" VerticalAlignment="Center"  
+                               Text="&#xE76F;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                    </TextBlock>
+                </Grid>
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
+    </Grid>
 </Page>
