@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Monaco;
 using Monaco.Editor;
@@ -68,6 +69,22 @@ namespace UnoSkiaSharpFiddle
 		{
 			public string Name { get; set; }
 			public string Code { get; set; }
+		}
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			base.OnNavigatedTo(e);
+
+			var deepLink = DeepLinkParser.Create($"?{e.Parameter}");
+
+			if (deepLink.TryGetValue("sample", out var startupSample)) 
+			{
+				Console.WriteLine($"startupSample: {startupSample}");
+
+				SelectedSample = Samples
+					.FirstOrDefault(s => s.Name == startupSample)
+					?? Samples.FirstOrDefault();
+			}
 		}
 
 		public void PopuplateSamples()

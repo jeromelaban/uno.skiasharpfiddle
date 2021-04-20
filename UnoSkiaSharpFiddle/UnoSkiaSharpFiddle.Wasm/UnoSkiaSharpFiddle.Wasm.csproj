@@ -58,9 +58,6 @@
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0-dev.45" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
   <Import Project="..\UnoSkiaSharpFiddle.Shared\UnoSkiaSharpFiddle.Shared.projitems" Label="Shared" Condition="Exists('..\UnoSkiaSharpFiddle.Shared\UnoSkiaSharpFiddle.Shared.projitems')" />
   <Target Name="BuildSDKFilesList" BeforeTargets="BeforeBuild">
     <ItemGroup>
